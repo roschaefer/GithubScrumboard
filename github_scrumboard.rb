@@ -1,28 +1,16 @@
 require 'prawn'
 require 'octokit'
-require 'configatron'
 require 'highline/import'
+require 'yaml'
 
 
 begin
-  require_relative 'github2scrumboard'
-rescue LoadError
+  config = YAML::load(open("github_scrumboard.yml"))
+  config = config['default']
+rescue StandardError
   abort "Couldn't find a configuration file!"
 end
 
-# DEFAULTS
-## LAYOUT
-configatron.layout.set_default(:columns, 2)
-configatron.layout.set_default(:rows, 2)
-configatron.layout.set_default(:gutter, 30)
-configatron.layout.set_default(:page, :landscape)
-
-## ISSUE LABELS
-configatron.labels.set_default(:priority, 'P')
-configatron.labels.set_default(:size, 'H')
-
-## FILTERS
-configatron.filter.set_default(:label, 'USERSTORY')
 
 class UserStory
   attr_accessor :id, :title, :size, :priority, :text
@@ -35,11 +23,11 @@ class UserStory
   end
 
   def fish_for_size(labels)
-    fish_for(labels, /#{configatron.labels.size}(\d+)/)
+    fish_for(labels, /#{config['issues']['label']['prefix']['size']}(\d+)/)
   end
 
   def fish_for_priority(labels)
-    fish_for(labels, /#{configatron.labels.priority}(\d+)/)
+    fish_for(labels, /#{config['issues']['label']['prefix']['priority']}(\d+)/)
   end
 
   def fish_for(labels, regex)
@@ -80,16 +68,17 @@ class UserStory
 
 end
 
-password = ask("Enter password: ") { |q| q.echo = false }
-client = Octokit::Client.new(:login => configatron.github.user, :password => password)
+config['github']['password'] = ask("Enter password: ") { |q| q.echo = false }
+
+client = Octokit::Client.new(config['github'])
 puts "Getting issues from Github..."
 issues = []
 page = 0
 begin
   page = page +1
-  temp_issues = client.list_issues("#{configatron.github.project}", :state => "open", :page => page)
-  unless configatron.filter.label.empty?
-    temp_issues.select! {|i| i['labels'].to_s =~ /#{configatron.filter.label}/}
+  temp_issues = client.list_issues(config['github']['project'], :state => "open", :page => page)
+  unless config['issues']['label']['filter'].empty?
+    temp_issues.select! {|i| i['labels'].to_s =~ /#{config['issues']['label']['filter']}/}
   end
   issues.push(*temp_issues)
 end while not temp_issues.empty?
@@ -98,17 +87,26 @@ stories = issues.collect do |issue|
   UserStory.new(issue)
 end
 
-pdf = Prawn::Document.generate("user_stories.pdf", :page_layout => configatron.layout.page, :page_size => 'A4') do
+def pagination(index, grid)
+    j = (index % grid['columns'])
+    i = (index / grid['rows']) % grid['columns']
+    return [i, j]
+end
+
+def filled(index, grid)
+  (((index + 1) % (grid['columns'] * grid['rows'])) == 0)
+end
+
+pdf = Prawn::Document.generate(config['file']['name'], config['page']) do
   font "Helvetica"
-  define_grid(:columns => configatron.layout.columns, :rows => configatron.layout.rows, :gutter => configatron.layout.gutter)
+  define_grid(config['grid'])
   stories.each_with_index do |story, index|
-    j = (index % configatron.layout.columns)
-    i = (index / configatron.layout.columns) % configatron.layout.rows
+    i,j = pagination(index, config['grid'])
     grid(i,j).bounding_box do
       instance_exec(&UserStory.header(story))
       instance_exec(&UserStory.body(story))
     end
-    if (((index + 1) % (configatron.layout.columns * configatron.layout.rows)) == 0)
+    if filled(index, config['grid'])
       start_new_page
     end
   end
