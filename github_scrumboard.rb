@@ -2,11 +2,11 @@ require 'prawn'
 require 'octokit'
 require 'highline/import'
 require 'yaml'
+require 'pry'
 
 
 begin
-  config = YAML::load(open("github_scrumboard.yml"))
-  config = config['default']
+  C = YAML::load(open("github_scrumboard.yml"))['default']
 rescue StandardError
   abort "Couldn't find a configuration file!"
 end
@@ -23,11 +23,11 @@ class UserStory
   end
 
   def fish_for_size(labels)
-    fish_for(labels, /#{config['issues']['label']['prefix']['size']}(\d+)/)
+    fish_for(labels, /#{C['issues']['label']['prefix']['size']}(\d+)/)
   end
 
   def fish_for_priority(labels)
-    fish_for(labels, /#{config['issues']['label']['prefix']['priority']}(\d+)/)
+    fish_for(labels, /#{C['issues']['label']['prefix']['priority']}(\d+)/)
   end
 
   def fish_for(labels, regex)
@@ -68,17 +68,17 @@ class UserStory
 
 end
 
-config['github']['password'] = ask("Enter password: ") { |q| q.echo = false }
+password = ask("Enter password: ") { |q| q.echo = false }
 
-client = Octokit::Client.new(config['github'])
+client = Octokit::Client.new(:login => C['github']['login'], :password => password)
 puts "Getting issues from Github..."
 issues = []
 page = 0
 begin
   page = page +1
-  temp_issues = client.list_issues(config['github']['project'], :state => "open", :page => page)
-  unless config['issues']['label']['filter'].empty?
-    temp_issues.select! {|i| i['labels'].to_s =~ /#{config['issues']['label']['filter']}/}
+  temp_issues = client.list_issues(C['github']['project'], :state => "open", :page => page)
+  unless C['issues']['label']['filter'].empty?
+    temp_issues.select! {|i| i['labels'].to_s =~ /#{C['issues']['label']['filter']}/}
   end
   issues.push(*temp_issues)
 end while not temp_issues.empty?
@@ -97,16 +97,16 @@ def filled(index, grid)
   (((index + 1) % (grid['columns'] * grid['rows'])) == 0)
 end
 
-pdf = Prawn::Document.generate(config['file']['name'], config['page']) do
+pdf = Prawn::Document.generate(C['file']['name'], C['page']) do
   font "Helvetica"
-  define_grid(config['grid'])
+  define_grid(C['grid'])
   stories.each_with_index do |story, index|
-    i,j = pagination(index, config['grid'])
+    i,j = pagination(index, C['grid'])
     grid(i,j).bounding_box do
       instance_exec(&UserStory.header(story))
       instance_exec(&UserStory.body(story))
     end
-    if filled(index, config['grid'])
+    if filled(index, C['grid'])
       start_new_page
     end
   end
