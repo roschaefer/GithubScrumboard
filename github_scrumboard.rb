@@ -6,9 +6,16 @@ require 'pry'
 
 
 begin
-  C = YAML::load(open("github_scrumboard.yml"))[:default]
+  config = YAML::load(open("github_scrumboard.default.yml"))
 rescue StandardError
-  abort "Couldn't find a configuration file!"
+  abort "Couldn't find a default configuration file!"
+end
+
+begin
+  custom_C = YAML::load(open("github_scrumboard.yml"))
+  C = config.merge(custom_C)
+rescue StandardError
+  # just fine
 end
 
 
