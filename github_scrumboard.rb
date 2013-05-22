@@ -6,7 +6,7 @@ require 'pry'
 
 
 begin
-  C = YAML::load(open("github_scrumboard.yml"))['default']
+  C = YAML::load(open("github_scrumboard.yml"))[:default]
 rescue StandardError
   abort "Couldn't find a configuration file!"
 end
@@ -23,11 +23,11 @@ class UserStory
   end
 
   def fish_for_size(labels)
-    fish_for(labels, /#{C['issues']['label']['prefix']['size']}(\d+)/)
+    fish_for(labels, /#{C[:issues][:label][:prefix][:size]}(\d+)/)
   end
 
   def fish_for_priority(labels)
-    fish_for(labels, /#{C['issues']['label']['prefix']['priority']}(\d+)/)
+    fish_for(labels, /#{C[:issues][:label][:prefix][:priority]}(\d+)/)
   end
 
   def fish_for(labels, regex)
@@ -70,15 +70,15 @@ end
 
 password = ask("Enter password: ") { |q| q.echo = false }
 
-client = Octokit::Client.new(:login => C['github']['login'], :password => password)
+client = Octokit::Client.new(:login => C[:github][:login], :password => password)
 puts "Getting issues from Github..."
 issues = []
 page = 0
 begin
   page = page +1
-  temp_issues = client.list_issues(C['github']['project'], :state => "open", :page => page)
-  unless C['issues']['label']['filter'].empty?
-    temp_issues.select! {|i| i['labels'].to_s =~ /#{C['issues']['label']['filter']}/}
+  temp_issues = client.list_issues(C[:github][:project], :state => "open", :page => page)
+  unless C[:issues][:label][:filter].empty?
+    temp_issues.select! {|i| i['labels'].to_s =~ /#{C[:issues][:label][:filter]}/}
   end
   issues.push(*temp_issues)
 end while not temp_issues.empty?
@@ -88,25 +88,25 @@ stories = issues.collect do |issue|
 end
 
 def pagination(index, grid)
-    j = (index % grid['columns'])
-    i = (index / grid['rows']) % grid['columns']
+    j = (index % grid[:columns])
+    i = (index / grid[:rows]) % grid[:columns]
     return [i, j]
 end
 
 def filled(index, grid)
-  (((index + 1) % (grid['columns'] * grid['rows'])) == 0)
+  (((index + 1) % (grid[:columns] * grid[:rows])) == 0)
 end
 
-pdf = Prawn::Document.generate(C['file']['name'], C['page']) do
+pdf = Prawn::Document.generate(C[:output][:file_name], C[:page]) do
   font "Helvetica"
-  define_grid(C['grid'])
+  define_grid(C[:grid])
   stories.each_with_index do |story, index|
-    i,j = pagination(index, C['grid'])
+    i,j = pagination(index, C[:grid])
     grid(i,j).bounding_box do
       instance_exec(&UserStory.header(story))
       instance_exec(&UserStory.body(story))
     end
-    if filled(index, C['grid'])
+    if filled(index, C[:grid])
       start_new_page
     end
   end
