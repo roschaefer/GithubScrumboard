@@ -75,9 +75,11 @@ class UserStory
 
 end
 
-password = ask("Enter password: ") { |q| q.echo = false }
+unless C[:github][:password]
+  C[:github][:password] = ask("Enter password: ") { |q| q.echo = false }
+end
 
-client = Octokit::Client.new(:login => C[:github][:login], :password => password)
+client = Octokit::Client.new(C[:github])
 puts "Getting issues from Github..."
 issues = []
 page = 0
