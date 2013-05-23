@@ -3,21 +3,38 @@ require 'octokit'
 require 'highline/import'
 require 'yaml'
 require 'pry'
+require 'mash'
+require 'active_support/core_ext/hash/deep_merge'
 
+DEFAULTS = <<EOS
+#github:
+  #login: MY_GITHUB_LOGIN
+  #project: MY_PROJECT_ON_GITHUB
+page:
+  layout: :landscape
+  size: A4
+grid:
+  columns: 2
+  rows: 2
+  gutter: 30
+issues:
+  prefix:
+    priority: P
+    size: H
+  filter: USERSTORY
+output:
+  file_name: user_stories.pdf
+  font: Helvetica
+EOS
 
-begin
-  config = YAML::load(open("github_scrumboard.default.yml"))
-rescue StandardError
-  abort "Couldn't find a default configuration file!"
+config = YAML::load(DEFAULTS)
+
+custom_config = YAML::load(open("github_scrumboard.yml"))
+if custom_config
+  config = config.deep_merge(custom_config)
 end
 
-begin
-  custom_C = YAML::load(open("github_scrumboard.yml"))
-  C = config.merge(custom_C)
-rescue StandardError
-  # just fine
-end
-
+C = Mash.new(config)
 
 class UserStory
   attr_accessor :id, :title, :size, :priority, :text
@@ -30,11 +47,11 @@ class UserStory
   end
 
   def fish_for_size(labels)
-    fish_for(labels, /#{C[:issues][:label][:prefix][:size]}(\d+)/)
+    fish_for(labels, /#{C.issues.prefix.size}(\d+)/)
   end
 
   def fish_for_priority(labels)
-    fish_for(labels, /#{C[:issues][:label][:prefix][:priority]}(\d+)/)
+    fish_for(labels, /#{C.issues.prefix.priority}(\d+)/)
   end
 
   def fish_for(labels, regex)
@@ -75,19 +92,25 @@ class UserStory
 
 end
 
-unless C[:github][:password]
-  C[:github][:password] = ask("Enter password: ") { |q| q.echo = false }
+unless C.github
+  C.github = {}
 end
 
-client = Octokit::Client.new(C[:github])
+[:login, :password, :project].each do |c|
+  unless C.github.send(c)
+    C.github.send("#{c}=", ask("Enter #{c}: ") { |q| q.echo = false if c == :password })
+  end
+end
+
+client = Octokit::Client.new(:login => C.github.login, :password => C.github.password)
 puts "Getting issues from Github..."
 issues = []
 page = 0
 begin
   page = page +1
-  temp_issues = client.list_issues(C[:github][:project], :state => "open", :page => page)
-  unless C[:issues][:label][:filter].empty?
-    temp_issues.select! {|i| i['labels'].to_s =~ /#{C[:issues][:label][:filter]}/}
+  temp_issues = client.list_issues(C.github.project, :state => "open", :page => page)
+  unless C.issues.filter.empty?
+    temp_issues.select! {|i| i['labels'].to_s =~ /#{C.issues.filter}/}
   end
   issues.push(*temp_issues)
 end while not temp_issues.empty?
@@ -97,25 +120,25 @@ stories = issues.collect do |issue|
 end
 
 def pagination(index, grid)
-    j = (index % grid[:columns])
-    i = (index / grid[:rows]) % grid[:columns]
+    j = (index % grid.columns)
+    i = (index / grid.rows) % grid.columns
     return [i, j]
 end
 
 def filled(index, grid)
-  (((index + 1) % (grid[:columns] * grid[:rows])) == 0)
+  (((index + 1) % (grid.columns * grid.rows)) == 0)
 end
 
-pdf = Prawn::Document.generate(C[:output][:file_name], C[:page]) do
+pdf = Prawn::Document.generate(C.output.file_name, :page_layout => C.page.layout, :size => C.page.size) do
   font "Helvetica"
-  define_grid(C[:grid])
+  define_grid(:rows => C.grid.rows, :columns => C.grid.columns, :gutter => C.grid.gutter)
   stories.each_with_index do |story, index|
-    i,j = pagination(index, C[:grid])
+    i,j = pagination(index, C.grid)
     grid(i,j).bounding_box do
       instance_exec(&UserStory.header(story))
       instance_exec(&UserStory.body(story))
     end
-    if filled(index, C[:grid])
+    if filled(index, C.grid)
       start_new_page
     end
   end
