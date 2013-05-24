@@ -1,13 +1,30 @@
-### USAGE
-1. create .github2scrum.rb configuration file, e.g.
-<pre><code>
-  configatron.github.user = "teamaker"
-  configatron.github.project = "teamaker/github_scrumboard"
-</code></pre>
+### Requirements
+* printer
 
-2. label your issues with "USERSTORY", optionally with "P3","H5" for a priority of 3 and 5 estimated hours
-3. run
+### Usage
+1. label your issues with "USERSTORY", you can optionally specify a size with a label "H5" for 5 estimated hours or set a priority with a label "P2" respectively
+2. run ```ruby github_scrumboard.rb```
+3. print file "user_stories.pdf"
+
+### Configuration
+* create github_scrumboard.yml, e.g.
 <pre><code>
-    ruby github_scrumboard.rb
+github:
+  login: MY_GITHUB_LOGIN
+  project: MY_PROJECT_ON_GITHUB
+page:
+  layout: :landscape
+  size: A4
+grid:
+  columns: 2
+  rows: 2
+  gutter: 30
+issues:
+  prefix:
+    priority: P
+    size: H
+  filter: USERSTORY
+output:
+  file_name: user_stories.pdf
+  font: Helvetica
 </code></pre>
-4. print file "user_stories.pdf"
