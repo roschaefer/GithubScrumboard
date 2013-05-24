@@ -8,8 +8,7 @@
 
 ### Configuration
 * create github_scrumboard.yml, e.g.
-
-    github:
+<pre><code>github:
       login: MY_GITHUB_LOGIN
       project: MY_PROJECT_ON_GITHUB
     page:
@@ -27,3 +26,4 @@
     output:
       file_name: user_stories.pdf
       font: Helvetica
+</code></pre>
