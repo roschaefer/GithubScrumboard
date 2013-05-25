@@ -1,0 +1,15 @@
+page:
+  layout: :landscape
+  size: A4
+grid:
+  columns: 2
+  rows: 2
+  gutter: 30
+issues:
+  prefix:
+    estimation: H
+    priority: P
+  filter: USERSTORY
+output:
+  filename: user_stories.pdf
+  font: Helvetica

@@ -14,15 +14,15 @@ Gem::Specification.new do |spec|
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
-  spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
+  spec.executables   = ["github_scrumboard"]
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
   spec.add_dependency 'prawn', "~> 0.12.0"
   spec.add_dependency "octokit", "~> 1.24.0"
   spec.add_dependency "highline", "~> 1.6.19"
-  spec.add_dependency "active_support", "~> 3.0.0"
-  spec.add_dependency "mash", "~> 0.1.1"
+  spec.add_dependency "settingslogic", "~> 2.0.9"
+  spec.add_dependency "activesupport", "~> 3.2.13"
 
   spec.add_development_dependency "pry", "~> 0.9.12.2"
   spec.add_development_dependency "bundler", "~> 1.3"
