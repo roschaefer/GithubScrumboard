@@ -34,7 +34,7 @@ This gem is not released yet, so you have to install it manually:
       project: MY_PROJECT_ON_GITHUB
 </code></pre>
 
-Have a look in ```lib/github_scrumboard/defaults.yml``` to see the full list of available options
+Check out the current [application defaults](lib/github_scrumboard/defaults.yml) to see the full list of available options
 ## Contributing
 
 1. Fork it
