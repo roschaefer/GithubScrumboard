@@ -1,4 +1,5 @@
 # GithubScrumboard
+[![Build Status](https://travis-ci.org/teamaker/github_scrumboard.png)](https://travis-ci.org/teamaker/github_scrumboard)
 
 Don't bother to use any online tools for agile development. Regard your github issues as user stories and print them out for use on a physical scrumboard.
 
