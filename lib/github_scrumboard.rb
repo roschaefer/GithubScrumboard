@@ -1,7 +1,7 @@
 require "github_scrumboard/version"
 require 'github_scrumboard/settings'
 require 'github_scrumboard/user_story'
-require 'github_scrumboard/pdf_exporter'
+require 'github_scrumboard/pdf/exporter'
 require 'github_scrumboard/github_client'
 
 require 'highline/import'
@@ -34,7 +34,7 @@ module GithubScrumboard
       stories = gh_client.get_user_stories
 
       puts "Generating output"
-      exporter = PdfExporter.new
+      exporter = Pdf::Exporter.new
       exporter.create_document(stories)
 
       puts "Done!"
