@@ -11,17 +11,17 @@ require 'optparse'
 module GithubScrumboard
   class Cli
 
-  OptionParser.new do |o|
-    o.on('-p', "--print FILENAME", String, "print to file") do |f|
-      GithubScrumboard::Settings.output['filename'] = f
+    OptionParser.new do |o|
+      o.on('-p', "--print FILENAME", String, "print to file") do |f|
+        GithubScrumboard::Settings.output['filename'] = f
+      end
+      o.parse!
     end
-    o.parse!
-  end
 
-  def symbolize_certain_settings
-    Settings['logger_level'] = Settings.logger_level.to_sym
-    Settings.page['layout']  = Settings.page.layout.to_sym
-  end
+    def symbolize_certain_settings
+      Settings['logger_level'] = Settings.logger_level.to_sym
+      Settings.page['layout']  = Settings.page.layout.to_sym
+    end
 
     def run!
       self.symbolize_certain_settings
@@ -36,9 +36,6 @@ module GithubScrumboard
           logger.info("Loaded configuration file: #{filename}")
         end
       end
-
-      Settings.try_file "#{Dir.home}/github_scrumboard.yml"
-      Settings.try_file "#{Dir.pwd}/github_scrumboard.yml"
 
       # some settings are mandatory, dear user
       Settings['github'] ||= {}
