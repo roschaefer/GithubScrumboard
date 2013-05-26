@@ -26,7 +26,7 @@ describe GithubScrumboard::Settings do
   end
 
     context "grid" do
-      [:columns, :rows, :gutter].each do |key|
+      [:columns, :rows, :margin].each do |key|
         subject {GithubScrumboard::Settings.grid.send(key)}
         it {should_not be_nil}
         it {should be_kind_of(Integer)}
