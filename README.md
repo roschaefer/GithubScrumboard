@@ -5,6 +5,7 @@ Don't bother to use any online tools for agile development. Regard your github i
 ## Installation
 
 This gem is not released yet, so you have to install it manually:
+
 1. git clone git://github.com/teamaker/github_scrumboard.git
 2. cd github_scrumboard
 3. rake install
@@ -26,9 +27,9 @@ This gem is not released yet, so you have to install it manually:
 * printer
 
 ## Usage
-1. label your issues with "USERSTORY", you can optionally specify a size or a priority with labels "H5" ("Hours") and "P2" ("Priority")
+1. label your issues with "USERSTORY", you can optionally specify a size or a priority with labels "H5" (Hours) and "P2" (Priority)
 2. run ```github_scrumboard.rb```
-3. print "user_stories.pdf"
+3. print ```user_stories.pdf```
 
 ### Configuration
 * create github_scrumboard.yml, e.g.
