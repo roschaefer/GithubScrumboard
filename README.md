@@ -23,7 +23,7 @@ This gem is not released yet, so you have to install it manually:
 <!--    $ gem install github_scrumboard-->
 
 ## Usage
-1. label your issues with "USERSTORY", you can optionally specify a size or a priority with labels "H5" (Hours) and "P2" (Priority)
+1. label your issues with ```USERSTORY```, you can optionally specify a size or a priority with labels ```H5``` (Hours) and ```P2``` (Priority)
 2. run ```github_scrumboard.rb```
 3. print ```user_stories.pdf```
 

@@ -61,7 +61,7 @@ module GithubScrumboard
 
       def self.priority_and_estimation(story)
         p = story.priority.nil? ? nil : "Priority: #{story.priority}"
-        e = story.estimation.nil? ? nil : "Size: #{story.estimation}"
+        e = story.estimation.nil? ? nil : "Hours: #{story.estimation}"
         [p,e].compact.join("\n")
       end
 
