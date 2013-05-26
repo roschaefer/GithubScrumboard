@@ -2,8 +2,11 @@ module GithubScrumboard
   module Pdf
     class StoryPresenter
 
-      def self.frontside
-
+      def self.frontside(story)
+        Proc.new do
+          instance_exec(&Pdf::StoryPresenter.header(story))
+          instance_exec(&Pdf::StoryPresenter.body(story))
+        end
       end
 
       def self.backside(story)

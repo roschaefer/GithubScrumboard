@@ -1,5 +1,5 @@
 page:
-  layout: :landscape
+  layout: landscape
   size: A4
 grid:
   columns: 2
@@ -14,3 +14,4 @@ output:
   filename: user_stories.pdf
   font: Helvetica
   backside: false
+logger_level: debug

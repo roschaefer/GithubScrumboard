@@ -35,27 +35,26 @@ module GithubScrumboard
       end
 
       def create_document(stories)
-        pdf = Prawn::Document.generate(Settings.output.filename, :page_layout => Settings.page.layout, :size => Settings.page['size']) do
-          font Settings.output.font
-          define_grid(:rows => Settings.grid.rows, :columns => Settings.grid.columns, :gutter => Settings.grid.gutter)
+        pdf = Prawn::Document.generate(Settings.output.filename, :page_layout => Settings.page.layout, :size => Settings.page['size']) do |pdf|
+          pdf.font Settings.output.font
+          pdf.define_grid(:rows => Settings.grid.rows, :columns => Settings.grid.columns, :gutter => Settings.grid.gutter)
           next_page = false
-          stories.each_slice(Settings.grid.rows * Settings.grid.columns).to_a.each_with_index do |some_stories, index|
-            start_new_page if next_page
+          stories.each_slice(Settings.grid.rows * Settings.grid.columns).to_a.each_with_index do |stories_fraction, index|
+            pdf.start_new_page if next_page
             # FRONTSIDE
-            some_stories.each_with_index do |story, index|
+            stories_fraction.each_with_index do |story, index|
               i,j = Exporter::pagination(index, Settings.grid)
-              grid(i,j).bounding_box do
-                instance_exec(&Pdf::StoryPresenter.header(story))
-                instance_exec(&Pdf::StoryPresenter.body(story))
+              pdf.grid(i,j).bounding_box do
+                pdf.instance_exec(&Pdf::StoryPresenter.frontside(story))
               end
             end
             # BACKSIDE
             if Settings.output.backside
-              start_new_page
-              some_stories.each_with_index do |story, index|
+              pdf.start_new_page
+              stories_fraction.each_with_index do |story, index|
                 i,j = Exporter::pagination(index, Settings.grid, backside=true)
-                grid(i,j).bounding_box do
-                  instance_exec(&Pdf::StoryPresenter.backside(story))
+                pdf.grid(i,j).bounding_box do
+                  pdf.instance_exec(&Pdf::StoryPresenter.backside(story))
                 end
               end
             end
