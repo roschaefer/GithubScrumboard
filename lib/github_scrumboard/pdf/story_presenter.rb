@@ -1,38 +1,61 @@
+require 'active_support/core_ext/array/extract_options'
 module GithubScrumboard
   module Pdf
     class StoryPresenter
+      attr_accessor :story, :pdf
 
-      def self.frontside(story)
-        Proc.new do
-          instance_exec(&Pdf::StoryPresenter.header(story))
-          instance_exec(&Pdf::StoryPresenter.body(story))
+      def initialize(story, pdf)
+        self.story = story
+        self.pdf = pdf
+      end
+
+      def frontside
+        if Settings.output.cutting_lines then self.cutting_lines end
+        padded_box do
+          self.header
+          self.body
         end
       end
 
-      def self.backside(story)
-        Proc.new do
-          font_size(25) {text Pdf::StoryPresenter.backside_text}
+      def backside
+        if Settings.output.cutting_lines then self.cutting_lines end
+        padded_box do
+          self.pdf.font_size(25) {self.pdf.text backside_text}
         end
       end
 
-      def self.body(story)
-        Proc.new do
-          bounding_box [0, cursor], :width  => bounds.width do
-            text_box story.text, :at => [bounds.left, bounds.top], :width => bounds.width
+      def padded_box(padding = Settings.grid.margin, &block)
+        pdf = self.pdf
+        pdf.bounding_box [padding, pdf.bounds.height-padding], width: pdf.bounds.width-2*padding, height: pdf.bounds.height-2*padding do
+          block.call
+        end
+      end
+
+      def cutting_lines
+        former_color = self.pdf.stroke_color
+        self.pdf.stroke_color 0,0,0,30
+        self.pdf.dash(5, :space => 10)
+        self.pdf.stroke_bounds
+        self.pdf.undash
+        self.pdf.stroke_color = former_color
+      end
+
+      def body
+        pdf = self.pdf
+        pdf.bounding_box [0, pdf.cursor], :width  => pdf.bounds.width do
+          pdf.text_box story.text, :at => [pdf.bounds.left, pdf.bounds.top], :width => pdf.bounds.width
+        end
+      end
+
+      def header(height = 30)
+        pdf = self.pdf
+        pdf.bounding_box [pdf.bounds.left, pdf.bounds.top], :width  => pdf.bounds.width, :height => height*1.25 do
+          pdf.bounding_box [pdf.bounds.left, pdf.bounds.top], :width  => pdf.bounds.width, :height => height do
+            split_width = 0.80 * pdf.bounds.width
+            pdf.text_box Pdf::StoryPresenter.id_and_title(story), :at => [pdf.bounds.left, pdf.bounds.top], :width => split_width, :height => height, :align => :left
+            pdf.text_box Pdf::StoryPresenter.priority_and_estimation(story), :at => [split_width, pdf.bounds.top], :width => (pdf.bounds.width - split_width), :height => height, :align => :right
           end
-        end
-      end
-
-      def self.header(story, height = 30)
-        Proc.new do
-          bounding_box [bounds.left, bounds.top], :width  => bounds.width, :height => height*1.25 do
-            bounding_box [bounds.left, bounds.top], :width  => bounds.width, :height => height do
-              split_width = 0.80 * bounds.width
-              text_box Pdf::StoryPresenter.id_and_title(story), :at => [bounds.left, bounds.top], :width => split_width, :height => height, :align => :left
-              text_box Pdf::StoryPresenter.priority_and_estimation(story), :at => [split_width, bounds.top], :width => (bounds.width - split_width), :height => height, :align => :right
-            end
-            stroke_horizontal_rule
-          end
+          pdf.stroke_horizontal_rule
         end
       end
 
@@ -46,8 +69,8 @@ module GithubScrumboard
         "##{story.id} #{story.title}"
       end
 
-      def self.backside_text(story)
-         story.id
+      def backside_text
+         self.story.id.to_s
       end
 
     end

@@ -4,7 +4,7 @@ page:
 grid:
   columns: 2
   rows: 2
-  gutter: 30
+  margin: 30
 issues:
   prefix:
     estimation: H
@@ -14,4 +14,5 @@ output:
   filename: user_stories.pdf
   font: Helvetica
   backside: false
+  cutting_lines: true
 logger_level: debug

@@ -10,7 +10,6 @@ require 'pry'
 require 'optparse'
 module GithubScrumboard
   class Cli
-
     OptionParser.new do |o|
       o.on('-p', "--print FILENAME", String, "print to file") do |f|
         GithubScrumboard::Settings.output['filename'] = f
@@ -31,9 +30,10 @@ module GithubScrumboard
       logger.formatter = proc do |severity, datetime, progname, msg|
         "#{severity}: #{msg}\n"
       end
+
       ["#{Dir.home}/.github_scrumboard.yml", "#{Dir.home}/github_scrumboard.yml", "#{Dir.pwd}/github_scrumboard.yml"].each do |filename|
         if Settings.try_file filename
-          logger.info("Loaded configuration file: #{filename}")
+          logger.info("Found configuration file: #{filename}")
         end
       end
 
@@ -47,9 +47,9 @@ module GithubScrumboard
       gh_client = GithubClient.new
       stories = gh_client.get_user_stories
 
-      logger.info( "Generating pdf")
+      logger.info( "Generating #{Settings.output.filename}")
       exporter = Pdf::Exporter.new
-      exporter.create_document(stories)
+      exporter.export(stories, Settings.output.filename)
 
       logger.info( "Done!")
 
