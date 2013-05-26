@@ -48,11 +48,13 @@ module GithubScrumboard
             end
           end
           # BACKSIDE
-          start_new_page
-          some_stories.each_with_index do |story, index|
-            i,j = PdfExporter::pagination(index, Settings.grid, backside=true)
-            grid(i,j).bounding_box do
-              instance_exec(&UserStory.backside(story))
+          if Settings.output.backside
+            start_new_page
+            some_stories.each_with_index do |story, index|
+              i,j = PdfExporter::pagination(index, Settings.grid, backside=true)
+              grid(i,j).bounding_box do
+                instance_exec(&UserStory.backside(story))
+              end
             end
           end
           next_page = true

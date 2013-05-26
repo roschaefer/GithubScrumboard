@@ -13,3 +13,4 @@ issues:
 output:
   filename: user_stories.pdf
   font: Helvetica
+  backside: false
