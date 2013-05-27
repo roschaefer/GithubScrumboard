@@ -10,12 +10,6 @@ require 'pry'
 require 'optparse'
 module GithubScrumboard
   class Cli
-    OptionParser.new do |o|
-      o.on('-p', "--print FILENAME", String, "print to file") do |f|
-        GithubScrumboard::Settings.output['filename'] = f
-      end
-      o.parse!
-    end
 
     def symbolize_certain_settings
       Settings['logger_level'] = Settings.logger_level.to_sym
