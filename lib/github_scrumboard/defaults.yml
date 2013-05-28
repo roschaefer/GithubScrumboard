@@ -9,7 +9,7 @@ issues:
   prefix:
     estimation: H
     priority: P
-    details: ~
+    details: "~"
   filter: USERSTORY
 output:
   filename: user_stories.pdf
