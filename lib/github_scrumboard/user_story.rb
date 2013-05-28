@@ -40,8 +40,7 @@ module GithubScrumboard
     end
 
     def self.details_regex
-      /^#{Settings.issues.prefix.details}([\S\s]*)(?=(\n\n|\z))/m
-      #/^#{Settings.issues.prefix.details}.*[\w\W]*?\n(?=\n)/m
+      /^#{Settings.issues.prefix.details}(.*?)(?:^\s*$|$\z)/m
     end
   end
 
