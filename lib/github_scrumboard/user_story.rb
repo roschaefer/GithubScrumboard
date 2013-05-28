@@ -31,8 +31,12 @@ module GithubScrumboard
     end
 
     def extract_details(body)
-      s = body.scan(self.class.details_regex)
-      s[0][0]
+      if body =~ self.class.details_regex
+        s = body.scan(self.class.details_regex)
+        s[0][0]
+      else
+          ""
+      end
     end
 
     def without_details(body)

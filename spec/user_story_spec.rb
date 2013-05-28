@@ -47,6 +47,13 @@ I want...
           subject.text.should_not =~ /Acceptance Criteria:.*at least something should be possible/m
         end
 
+        it 'and won\'t crash, if there is no details section at all' do
+          issue['body'] = "Somthing, that is not a details section"
+          story = GithubScrumboard::UserStory.new(issue)
+          story.details.should be_empty
+          story.text.should eq issue['body']
+        end
+
         context "the ending is" do
           it "an empty line" do
             issue['body'] << "\n \nfoobar"
