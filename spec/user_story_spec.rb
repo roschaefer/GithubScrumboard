@@ -40,15 +40,17 @@ I want...
         subject {GithubScrumboard::UserStory.new(issue)}
 
         it "e.g. acceptance criteria" do
+          subject.text.should =~ /As somebody/
           subject.details.should =~ /Acceptance Criteria:.*at least something should be possible/m
         end
 
         it "that won't go into the main text of a user story" do
+          subject.text.should =~ /As somebody/
           subject.text.should_not =~ /Acceptance Criteria:.*at least something should be possible/m
         end
 
         it 'and won\'t crash, if there is no details section at all' do
-          issue['body'] = "Somthing, that is not a details section"
+          issue['body']= "Something, that is not a details section\n\nDefinitely not"
           story = GithubScrumboard::UserStory.new(issue)
           story.details.should be_empty
           story.text.should eq issue['body']
