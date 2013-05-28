@@ -5,7 +5,7 @@ describe GithubScrumboard::UserStory do
 As somebody
 I want...
 
-=Acceptance Criteria:
+= Acceptance Criteria:
 * at least something should be possible
 '''
 }

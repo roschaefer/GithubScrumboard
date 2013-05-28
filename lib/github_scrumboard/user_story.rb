@@ -9,7 +9,7 @@ module GithubScrumboard
       self.priority = extract_priority(issue['labels'])
       self.estimation = extract_estimation(issue['labels'])
       self.text = without_details(issue['body'].to_s)
-      self.details = extract_details(issue['body'])
+      self.details = extract_details(issue['body'].to_s)
     end
 
     def extract_estimation(labels)
@@ -40,11 +40,11 @@ module GithubScrumboard
     end
 
     def without_details(body)
-      body.sub(self.class.details_regex,'')
+      body.gsub(self.class.details_regex,'')
     end
 
     def self.details_regex
-      /^#{Settings.issues.prefix.details}(.*?)(?:^\s*$|$\z)/m
+      /^#{Settings.issues.prefix.details}(.*?)(?:^\s*$|\z)/m
     end
   end
 
