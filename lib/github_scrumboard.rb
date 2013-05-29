@@ -11,13 +11,12 @@ require 'optparse'
 module GithubScrumboard
   class Cli
 
-    def symbolize_certain_settings
+    def symbolize_logger_settings
       Settings['logger_level'] = Settings.logger_level.to_sym
-      Settings.page['layout']  = Settings.page.layout.to_sym
     end
 
     def run!
-      self.symbolize_certain_settings
+      self.symbolize_logger_settings
       logger = Logger.new(STDOUT)
       levels = {:debug => Logger::DEBUG, :info => Logger::INFO, :warn => Logger::WARN, :error => Logger::ERROR, :fatal => Logger::FATAL}
       logger.level = levels[Settings.logger_level]
@@ -29,6 +28,13 @@ module GithubScrumboard
         if Settings.try_file filename
           logger.info("Found configuration file: #{filename}")
         end
+      end
+
+      unless Settings.errors.empty?
+        Settings.errors.each do |e|
+          logger.error(e)
+        end
+        exit 1
       end
 
       # some settings are mandatory, dear user

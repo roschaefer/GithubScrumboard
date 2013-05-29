@@ -13,5 +13,18 @@ module GithubScrumboard
       end
     end
 
+    def self.normalize!
+      self.class.page['layout']  = self.class.page.layout.to_sym
+      self.class['logger_level'] = self.class.logger_level.to_sym
+    end
+
+    def self.errors
+      errors = []
+      if self.issues.prefix.details.empty?
+        errors << "Details prefix pattern is empty!"
+      end
+      return errors
+    end
+
   end
 end
