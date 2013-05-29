@@ -50,4 +50,18 @@ describe GithubScrumboard::Settings do
       it {should be_kind_of(String)}
     end
 
+
+    #context "#new" do
+      #it "escapes the details prefix pattern" do
+        #settings = Settings.new(:issues => {:prefix => {:details => ".*"}})
+        #settings.issues.prefix.details.should eq "\.\*"
+      #end
+
+      #it "symbolizes prawn page layout attibute" do
+        #settings = Settings.new(:page => {:layout => "landscape"})
+        #settings.should eq :landscape
+      #end
+
+    #end
+
 end

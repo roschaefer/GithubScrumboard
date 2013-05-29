@@ -37,6 +37,8 @@ module GithubScrumboard
         exit 1
       end
 
+      Settings.normalize!
+
       # some settings are mandatory, dear user
       Settings['github'] ||= {}
       ['login', 'project', 'password'].each do |c|
