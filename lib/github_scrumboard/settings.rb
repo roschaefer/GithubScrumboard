@@ -14,9 +14,9 @@ module GithubScrumboard
     end
 
     def self.normalize!
-      self.class.page['layout']  = self.class.page.layout.to_sym
-      self.class['logger_level'] = self.class.logger_level.to_sym
-      self.class.issues.prefix['details'] = Regex.escape(self.class.issues.prefix.details)
+      self.page['layout']  = self.page.layout.to_sym
+      self['logger_level'] = self.logger_level.to_sym
+      self.issues.prefix['details'] = Regexp.escape(self.issues.prefix.details)
     end
 
     def self.errors
