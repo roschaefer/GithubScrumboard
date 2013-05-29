@@ -21,7 +21,7 @@ module GithubScrumboard
 
     def self.errors
       errors = []
-      if self.issues.prefix.details.empty?
+      if self.issues.prefix.details.nil? ||  self.issues.prefix.details.empty?
         errors << "Details prefix pattern is empty!"
       end
       return errors
