@@ -20,7 +20,7 @@ module GithubScrumboard
       def backside
         if Settings.output.cutting_lines then self.cutting_lines end
         padded_box do
-          self.pdf.font_size(25) {self.pdf.text backside_text}
+          self.pdf.text backside_text
         end
       end
 
@@ -70,7 +70,7 @@ module GithubScrumboard
       end
 
       def backside_text
-         self.story.id.to_s
+         self.story.details
       end
 
     end

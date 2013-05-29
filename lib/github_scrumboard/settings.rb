@@ -13,5 +13,19 @@ module GithubScrumboard
       end
     end
 
+    def self.normalize!
+      self.page['layout']  = self.page.layout.to_sym
+      self['logger_level'] = self.logger_level.to_sym
+      self.issues.prefix['details'] = Regexp.escape(self.issues.prefix.details)
+    end
+
+    def self.errors
+      errors = []
+      if self.issues.prefix.details.nil? ||  self.issues.prefix.details.empty?
+        errors << "Details prefix pattern is empty!"
+      end
+      return errors
+    end
+
   end
 end
