@@ -1,14 +1,15 @@
 module GithubScrumboard
   class UserStory
 
-    attr_accessor :id, :title, :estimation, :priority, :text
+    attr_accessor :id, :title, :estimation, :priority, :text, :details
 
     def initialize(issue)
       self.id = issue['number'].to_s
       self.title = issue['title'].to_s
       self.priority = extract_priority(issue['labels'])
       self.estimation = extract_estimation(issue['labels'])
-      self.text = issue['body'].to_s
+      self.text = without_details(issue['body'].to_s)
+      self.details = extract_details(issue['body'].to_s)
     end
 
     def extract_estimation(labels)
@@ -27,6 +28,23 @@ module GithubScrumboard
         end
       end
       nil
+    end
+
+    def extract_details(body)
+      if body =~ self.class.details_regex
+        s = body.scan(self.class.details_regex)
+        s[0][0]
+      else
+          ""
+      end
+    end
+
+    def without_details(body)
+      body.gsub(self.class.details_regex,'')
+    end
+
+    def self.details_regex
+      /^#{Settings.issues.prefix.details}(.*?)(?:^\s*$|\z)/m
     end
   end
 
