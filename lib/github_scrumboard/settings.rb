@@ -17,12 +17,16 @@ module GithubScrumboard
       self.page['layout']  = self.page.layout.to_sym
       self['logger_level'] = self.logger_level.to_sym
       self.issues.prefix['details'] = Regexp.escape(self.issues.prefix.details)
+      self.stories['state'] = self.stories.state.to_sym
     end
 
     def self.errors
       errors = []
       if self.issues.prefix.details.nil? ||  self.issues.prefix.details.empty?
         errors << "Details prefix pattern is empty!"
+      end
+      unless [:all, :done, :todo].include? self.stories.state
+        errors << "Unrecognized user story state!"
       end
       return errors
     end
