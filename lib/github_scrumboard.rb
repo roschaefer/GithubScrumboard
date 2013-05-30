@@ -31,6 +31,7 @@ module GithubScrumboard
       end
 
       unless Settings.errors.empty?
+        logger.error("Invalid configuration:")
         Settings.errors.each do |e|
           logger.error(e)
         end
