@@ -17,3 +17,5 @@ output:
   backside: false
   cutting_lines: true
 logger_level: debug
+stories:
+  state: todo
