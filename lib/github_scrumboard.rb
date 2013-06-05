@@ -2,21 +2,20 @@ require "github_scrumboard/version"
 require 'github_scrumboard/settings'
 require 'github_scrumboard/user_story'
 require 'github_scrumboard/pdf/exporter'
+require 'github_scrumboard/csv/exporter'
 require 'github_scrumboard/github_client'
 require 'logger'
+require "thor"
 
 require 'highline/import'
 require 'pry'
-require 'optparse'
 module GithubScrumboard
-  class Cli
+  class Cli < Thor
 
-    def symbolize_logger_settings
-      Settings['logger_level'] = Settings.logger_level.to_sym
-    end
-
+    desc "run!", "generate a user stories pdf"
+    method_option :output, :type => :string, :aliases => ['-o','--out'], :desc => "The output filename"
     def run!
-      self.symbolize_logger_settings
+      Settings['logger_level'] = Settings.logger_level.to_sym
       logger = Logger.new(STDOUT)
       levels = {:debug => Logger::DEBUG, :info => Logger::INFO, :warn => Logger::WARN, :error => Logger::ERROR, :fatal => Logger::FATAL}
       logger.level = levels[Settings.logger_level]
@@ -30,6 +29,10 @@ module GithubScrumboard
         end
       end
 
+      Settings.output['filename'] = options[:output] if options[:output]
+
+      Settings.normalize!
+
       unless Settings.errors.empty?
         logger.error("Invalid configuration:")
         Settings.errors.each do |e|
@@ -37,8 +40,6 @@ module GithubScrumboard
         end
         exit 1
       end
-
-      Settings.normalize!
 
       # some settings are mandatory, dear user
       Settings['github'] ||= {}
@@ -51,12 +52,21 @@ module GithubScrumboard
       stories = gh_client.get_user_stories
 
       logger.info( "Generating #{Settings.output.filename}")
-      exporter = Pdf::Exporter.new
-      exporter.export(stories, Settings.output.filename)
+
+      case Settings.file_extension
+      when :pdf
+        exporter = Pdf::Exporter.new
+        exporter.export(stories, Settings.output.filename)
+      when :csv
+        exporter = Csv::Exporter.new
+        exporter.export(stories, Settings.output.filename)
+      end
 
       logger.info( "Done!")
 
     end
+
+    default_task :run!
   end
 
 

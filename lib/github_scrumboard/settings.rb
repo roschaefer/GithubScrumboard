@@ -26,9 +26,16 @@ module GithubScrumboard
         errors << "Details prefix pattern is empty!"
       end
       unless [:all, :done, :todo].include? self.stories.state
-        errors << "Unrecognized user story state!"
+        errors << "Unrecognized user story state: #{self.stories.state}"
+      end
+      unless [:pdf, :csv].include? self.file_extension
+        errors << "Unprocessable filetype: #{self.file_extensionn}"
       end
       return errors
+    end
+
+    def file_extension
+      self.output.filename.split('.').last.to_sym
     end
 
   end
