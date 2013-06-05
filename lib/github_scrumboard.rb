@@ -2,6 +2,7 @@ require "github_scrumboard/version"
 require 'github_scrumboard/settings'
 require 'github_scrumboard/user_story'
 require 'github_scrumboard/pdf/exporter'
+require 'github_scrumboard/csv/exporter'
 require 'github_scrumboard/github_client'
 require 'logger'
 require "thor"
@@ -12,6 +13,7 @@ module GithubScrumboard
   class Cli < Thor
 
     desc "run!", "generate a user stories pdf"
+    method_option :output, :type => :string, :aliases => ['-o','--out'], :desc => "The output filename"
     def run!
       Settings['logger_level'] = Settings.logger_level.to_sym
       logger = Logger.new(STDOUT)
@@ -26,6 +28,8 @@ module GithubScrumboard
           logger.info("Found configuration file: #{filename}")
         end
       end
+
+      Settings.output['filename'] = options[:output] if options[:output]
 
       Settings.normalize!
 
@@ -48,8 +52,15 @@ module GithubScrumboard
       stories = gh_client.get_user_stories
 
       logger.info( "Generating #{Settings.output.filename}")
-      exporter = Pdf::Exporter.new
-      exporter.export(stories, Settings.output.filename)
+
+      case Settings.file_extension
+      when :pdf
+        exporter = Pdf::Exporter.new
+        exporter.export(stories, Settings.output.filename)
+      when :csv
+        exporter = Csv::Exporter.new
+        exporter.export(stories, Settings.output.filename)
+      end
 
       logger.info( "Done!")
 

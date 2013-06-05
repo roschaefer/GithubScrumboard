@@ -1,4 +1,5 @@
 require 'csv'
+require 'github_scrumboard/csv/story_presenter'
 module GithubScrumboard
   module Csv
     class Exporter

@@ -4,11 +4,11 @@ module GithubScrumboard
       attr_accessor :story
 
       def self.headers
-        [:id,:estimation, :priority, :title, :text, :backside]
+        [:id,:estimation, :priority, :title, :text, :details]
       end
 
       def self.csv_headers
-        headers.map {|h| h.to_s.capitalize}
+        self.headers.map {|h| h.to_s.capitalize}
       end
 
       def initialize(story)
@@ -16,7 +16,7 @@ module GithubScrumboard
       end
 
       def to_csv
-        headers.map do |h|
+        self.class.headers.map do |h|
           story.send(h)
         end
       end
