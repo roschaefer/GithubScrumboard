@@ -2,5 +2,4 @@
 
 require 'github_scrumboard'
 
-cli = GithubScrumboard::Cli.new
-cli.run!
+GithubScrumboard::Cli.start

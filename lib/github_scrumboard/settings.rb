@@ -26,7 +26,7 @@ module GithubScrumboard
         errors << "Details prefix pattern is empty!"
       end
       unless [:all, :done, :todo].include? self.stories.state
-        errors << "Unrecognized user story state!"
+        errors << "Unrecognized user story state: #{self.stories.state}"
       end
       return errors
     end

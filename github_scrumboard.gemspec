@@ -23,6 +23,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "highline", "~> 1.6.19"
   spec.add_dependency "settingslogic", "~> 2.0.9"
   spec.add_dependency "activesupport", "~> 3.2.13"
+  spec.add_dependency "thor", "~> 0.18.1"
 
   spec.add_development_dependency "pry", "~> 0.9.12.2"
   spec.add_development_dependency "bundler", "~> 1.3"
