@@ -1,7 +1,10 @@
 # GithubScrumboard
 [![Build Status](https://travis-ci.org/teamaker/github_scrumboard.png)](https://travis-ci.org/teamaker/github_scrumboard)
 
-Manage your github issues like user stories and print them out. Put your user stories on a physical scrum board.
+Manage your github issues like user stories and print them out. Cut the sheets of paper along the cutting lines. Then put your user stories on a physical scrum board.
+
+![user stories](https://github.com/teamaker/github_scrumboard/blob/master/user_stories.png)
+
 
 ## Installation
 
