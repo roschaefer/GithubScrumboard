@@ -30,6 +30,7 @@ module GithubScrumboard
         end
       end
 
+      Settings.normalize!
       unless Settings.errors.empty?
         logger.error("Invalid configuration:")
         Settings.errors.each do |e|
@@ -38,7 +39,6 @@ module GithubScrumboard
         exit 1
       end
 
-      Settings.normalize!
 
       # some settings are mandatory, dear user
       Settings['github'] ||= {}
