@@ -7,8 +7,8 @@ Gem::Specification.new do |spec|
   spec.name          = "github_scrumboard"
   spec.version       = GithubScrumboard::VERSION
   spec.authors       = ["Robert Schaefer"]
-  spec.email         = ["rs@oxon.ch"]
-  spec.description   = %q{Don't bother to use any online tools for agile development. Regard your github issues as user stories and print them out for use on a physical scrumboard.}
+  spec.email         = ["robert.schaefer@student.hpi.uni-potsdam.de"]
+  spec.description   = %q{Don't use online tools for agile development. Regard your github issues as user stories and print and put them on a physical scrumboard.}
   spec.summary       = %q{Exports your github issues as pdf with a fixed layout}
   spec.homepage      = ""
   spec.license       = "MIT"
