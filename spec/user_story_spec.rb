@@ -22,13 +22,13 @@ I want...
           subject {GithubScrumboard::UserStory.new(issue)}
 
           it "but only the text that is marked up" do
-            pending do
+            skip do
               subject.details.should =~ /Details:.* this is a hint/
             end
           end
 
           it "multiple detail descriptions are tied together" do
-            pending do
+            skip do
               subject.details.should =~ /Details:.* this is a hint.*this is an implementation detail/
             end
           end
