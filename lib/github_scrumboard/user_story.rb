@@ -1,11 +1,12 @@
 module GithubScrumboard
   class UserStory
 
-    attr_accessor :id, :title, :estimation, :priority, :text, :details
+    attr_accessor :id, :title, :estimation, :priority, :text, :details, :state
 
     def initialize(issue)
       self.id = issue['number'].to_s
       self.title = issue['title'].to_s
+      self.state = ((issue['state'] == "closed") && :done) || :todo
       self.priority = extract_priority(issue['labels'])
       self.estimation = extract_estimation(issue['labels'])
       self.text = without_details(issue['body'].to_s)
