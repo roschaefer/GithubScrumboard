@@ -73,6 +73,13 @@ I want...
             story.text.should_not include("foobar")
           end
         end
+        context "if the state of the issue is closed" do
+          it "then the state of the corresponding user story is done" do
+            issue['state'] = "closed"
+            story = GithubScrumboard::UserStory.new(issue)
+            expect(story.state).to be :done
+          end
+        end
 
       end
 
