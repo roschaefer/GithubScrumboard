@@ -43,6 +43,9 @@ module GithubScrumboard
       def body
         pdf = self.pdf
         pdf.bounding_box [0, pdf.cursor], :width  => pdf.bounds.width do
+          if (story.state == :done)
+            pdf.formatted_text_box([ {:text => "DONE", :at => [pdf.bounds.left, pdf.bounds.bottom], :width => pdf.bounds.width, :size => 100, :color => 'CCCCCC'}], :rotate => 45, :rotate_around => :center)
+          end
           pdf.text_box story.text, :at => [pdf.bounds.left, pdf.bounds.top], :width => pdf.bounds.width
         end
       end
