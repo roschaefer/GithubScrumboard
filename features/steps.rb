@@ -1,5 +1,7 @@
-Then(/^I should see a help page like this:$/) do |string|
-    pending # express the regexp above with the code you wish you had
+Then(/^I should see a help page like this:$/) do |output|
+  output.split("[...]\n").each do |part|
+    expect(@command).to have_output an_output_string_matching(part)
+  end
 end
 
 When(/^I run `(.+)`$/) do |command|

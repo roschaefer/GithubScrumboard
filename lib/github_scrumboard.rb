@@ -4,12 +4,35 @@ require 'github_scrumboard/user_story'
 require 'github_scrumboard/pdf/exporter'
 require 'github_scrumboard/github_client'
 require 'logger'
-
 require 'highline/import'
 require 'pry'
 require 'optparse'
+
 module GithubScrumboard
   class Cli
+    def parse(args)
+      options = {}
+      parser = OptionParser.new do |opts|
+        opts.banner = "Github Scrumboard is a tool to create pdfs from your github issues.\nAfter creating the pdf, you can print the issues, cut them out and put them on a physical scrum board."
+        opts.separator ""
+        opts.on_tail("-h", "--help", "Show this message") do |v|
+          puts opts
+          puts
+          puts "Further information:"
+          puts "  https://github.com/roschaefer/github_scrumboard"
+          exit
+        end
+
+        opts.on_tail("--version", "Show version") do
+          puts GithubScrumboard::VERSION
+          exit
+        end
+
+      end
+
+      parser.parse!(args)
+      options
+    end
 
     def symbolize_logger_settings
       Settings['logger_level'] = Settings.logger_level.to_sym
@@ -58,6 +81,4 @@ module GithubScrumboard
 
     end
   end
-
-
 end
