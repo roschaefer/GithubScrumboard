@@ -1,3 +1,4 @@
+@wip
 Feature: Invalid Settings
   As a user
   I want to be warned if I misconfigured my tool

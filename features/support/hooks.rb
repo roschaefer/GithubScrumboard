@@ -1,4 +1,3 @@
 Before do
-  # neccessary to load local configuration
-  #Dir.chdir(current_dir)
+  setup_aruba
 end
