@@ -1,5 +1,5 @@
 # GithubScrumboard
-[![Build Status](https://travis-ci.org/roschaefer/GithubScrumboard.png)](https://travis-ci.org/roschaefer/GithubScrumboard)
+[![Build Status](https://travis-ci.org/roschaefer/github_scrumboard.png)](https://travis-ci.org/roschaefer/github_scrumboard)
 
 Manage your github issues like user stories and print them. Cut the sheets of paper along the cutting lines. Put your user stories on a physical scrum board.
 
