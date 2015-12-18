@@ -10,7 +10,7 @@ end
 
 When(/^I run `(.+)`$/) do |command|
   cmd = sanitize_text(command)
-  @command = run(cmd, :fail_on_error => false)
+  @command = run(cmd, :fail_on_error => false, :exit_timeout => 1)
 end
 
 Given(/^a file named "(.*?)" with:$/) do |arg1, string|
@@ -33,5 +33,7 @@ Given(/^I have a local 'github_scrumboard\.yml' with the following content:$/) d
   write_file('github_scrumboard.yml', content)
 end
 
-
+Then(/^I my final configuration should merge default and local settings:$/) do |output|
+  check_output_roughly_matches(output)
+end
 

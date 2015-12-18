@@ -1,19 +1,14 @@
-@wip
 Feature: Verbose output
   As a developer
-  I want to run github_scrumboard --verbose
+  I want to run github_scrumboard with verbosity
   In order to see the final configuration of the tool
 
   Scenario: Run with verbose switch
     When I run `github_scrumboard --verbose`
     Then I should see my final configuration e.g. like this:
     """
-    page:
-      layout: landscape
       size: A4
     [...]
-    issues:
-      prefix:
         estimation: H
         priority: P
         details: "~"
@@ -29,13 +24,15 @@ Feature: Verbose output
       size: A3
     """
     When I run `github_scrumboard --verbose`
-    Then I should see my final configuration e.g. like this:
+    Then I my final configuration should merge default and local settings:
     """
-    github:
       login: my_login
       project: my_repository
     [...]
-    page:
-      layout: landscape
       size: A3
+    [...]
+        estimation: H
+        priority: P
+        details: "~"
+      filter: USERSTORY
     """
