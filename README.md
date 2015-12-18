@@ -17,7 +17,7 @@ It's not released yet, so you have to install it manually:
 
 ## Usage
 1. label your issues with ```USERSTORY```, you can optionally specify a size or a priority with labels ```H5``` (5 estimated Hours) and ```P2``` (Priority Level 2)
-2. run ```github_scrumboard.rb```
+2. run ```github_scrumboard```
 3. print ```user_stories.pdf```
 
 ### Configuration
