@@ -7,11 +7,16 @@ require 'logger'
 require 'highline/import'
 require 'pry'
 require 'optparse'
+require 'ostruct'
 
 module GithubScrumboard
   class Cli
+    attr_reader :options
+
     def parse(args)
-      options = {}
+      options = OpenStruct.new
+      options.verbose = false
+
       parser = OptionParser.new do |opts|
         opts.banner = "Github Scrumboard is a tool to create pdfs from your github issues.\nAfter creating the pdf, you can print the issues, cut them out and put them on a physical scrum board."
         opts.separator ""
@@ -23,6 +28,10 @@ module GithubScrumboard
           exit
         end
 
+        opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
+          options.verbose = v
+        end
+
         opts.on_tail("--version", "Show version") do
           puts GithubScrumboard::VERSION
           exit
@@ -31,7 +40,7 @@ module GithubScrumboard
       end
 
       parser.parse!(args)
-      options
+      @options = options
     end
 
     def symbolize_logger_settings
@@ -62,6 +71,10 @@ module GithubScrumboard
         exit 1
       end
 
+      if options.verbose
+        puts "Configuration so far:"
+        puts Settings.to_hash.to_yaml
+      end
 
       # some settings are mandatory, dear user
       Settings['github'] ||= {}
