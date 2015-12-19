@@ -37,3 +37,15 @@ Then(/^I my final configuration should merge default and local settings:$/) do |
   check_output_roughly_matches(output)
 end
 
+Then(/^a file called `github_scrumboard\.yml` is placed in the current directory$/) do
+  @file_path = "github_scrumboard.yml"
+  expect(@file_path).to be_an_existing_file
+end
+
+Then(/^the file has \(roughly\) the following content:$/) do |content|
+  content.split("[...]\n").each do |part|
+    expect(@file_path).to have_file_content file_content_including(part.chomp)
+  end
+end
+
+

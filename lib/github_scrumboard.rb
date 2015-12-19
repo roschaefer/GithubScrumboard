@@ -28,6 +28,10 @@ module GithubScrumboard
           exit
         end
 
+        opts.on("--init", "Create a local configuration file from the defaults") do |i|
+          options.init = i
+        end
+
         opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
           options.verbose = v
         end
@@ -47,7 +51,18 @@ module GithubScrumboard
       Settings['logger_level'] = Settings.logger_level.to_sym
     end
 
+    def generate_configuration
+      defaults_path = Pathname.new(__FILE__).join("..").join("github_scrumboard").join("defaults.yml")
+      local_path = Pathname.getwd.join("github_scrumboard.yml")
+      FileUtils.copy_file(defaults_path, local_path)
+      true
+    end
+
     def run!
+      if options.init
+        generate_configuration and exit
+      end
+
       self.symbolize_logger_settings
       logger = Logger.new(STDOUT)
       levels = {:debug => Logger::DEBUG, :info => Logger::INFO, :warn => Logger::WARN, :error => Logger::ERROR, :fatal => Logger::FATAL}
