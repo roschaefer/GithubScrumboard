@@ -19,3 +19,6 @@ output:
 logger_level: debug
 stories:
   state: todo
+github:
+  login: # My github user login
+  project: # Github repository, e.g. roschaefer/github_scrumboard
