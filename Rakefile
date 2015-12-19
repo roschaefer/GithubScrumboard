@@ -16,3 +16,6 @@ end
 
 desc "Run all cucumber features"
 task :cucumber => ["cucumber:ok", "cucumber:wip"]
+
+desc "Run all tess"
+task :default => [:spec, :cucumber]
